@@ -1,4 +1,4 @@
-1) El proyecto está hecho en laravel 9 y reactjs.
+1) El proyecto está hecho en laravel 9 y reactjs. Requiere php 8.1 o superior. La versión de node usada fue la 18.15.0 
 
 2) Al descargar o clonar el proyecto se obtiene una carpeta principal que contiene 2 proyectos: el proyecto api en laravel 9 y el proyecto frontend en react.
 

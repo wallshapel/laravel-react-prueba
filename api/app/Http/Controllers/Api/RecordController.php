@@ -8,6 +8,10 @@
 
     class RecordController extends Controller {
 
+        public function index() {
+            return Record::with('city')->get(); // equivale a Record::all() y el with añade el modelo city relacionado
+        } 
+
         public function store(Request $request) {            
             $record = new Record();
             $record->city_id = $request->city_id;

@@ -7,7 +7,8 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path='/' element={ <Searcher /> } />
+        <Route path='/' element={ <Searcher /> } />        
+        <Route path='/record' element={ <Record /> } />        
         <Route path='/record/city/:id' element={ <Record /> } />
       </Routes>
     </div>

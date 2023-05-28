@@ -11,5 +11,6 @@
 
     Route::controller(RecordController::class)->group(function () { // Con esta forma ya no es necesario usar el prefijo 'api'        
         Route::post('/record', 'store');
+        Route::get('/record', 'index');
         Route::get('/record/city/{id}', 'show');
     });
