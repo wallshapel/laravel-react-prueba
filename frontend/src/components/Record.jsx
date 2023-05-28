@@ -80,10 +80,10 @@ const Record = () => {
 
 	return (
 		<div className='container text-center table-responsive'>
-			{ id === undefined ? <h1 className='mt-5 mb-4'>All 3 cities weather history</h1> : '' }
-			{ id === '1' ? <h1 className='mt-5 mb-4'>Miami weather history</h1> : '' } 
-			{ id === '2' ? <h1 className='mt-5 mb-4'>New York weather history</h1> : '' } 
-			{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando weather history</h1> : '' }
+			{ id === undefined ? <h1 className='mt-5 mb-4'>All 3 Cities Weather History</h1> : '' }
+			{ id === '1' ? <h1 className='mt-5 mb-4'>Miami Weather History</h1> : '' } 
+			{ id === '2' ? <h1 className='mt-5 mb-4'>New York Weather History</h1> : '' } 
+			{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando Weather History</h1> : '' }
 			<DataTable 
 				columns={ columns } 
 				data={ records } 

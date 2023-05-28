@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import miamiMap from './images/miami.png';
 import newYorkMap from './images/new-york.png';
 import orlandoMap from './images/orlando.png';
-
+import './weather.css';
 
 export const Weather = ({ cityName }) => {
 
@@ -63,7 +63,7 @@ export const Weather = ({ cityName }) => {
   	}, [cityName]);
 
 	return (
-		<div className='container'>			
+		<div className='container font-size'>			
 			{ cityName === 'Miami' ? <img src={ miamiMap } alt='Miami' /> : '' } 
 			{ cityName === 'New York' ? <img src={ newYorkMap } alt='New York' /> : '' } 			
 			{ cityName === 'Orlando' ? <img src={ orlandoMap } alt='Orlando' /> : '' }			
