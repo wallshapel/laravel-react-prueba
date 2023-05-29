@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';  // useParams servirá para obtener el id de la URL
 import moment from 'moment';  // Librería para formatear fechas
 import DataTable from 'react-data-table-component';
+import { Loading } from './Loading/Loading';
 
 const Record = () => {
 
@@ -78,25 +79,38 @@ const Record = () => {
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return (
-		<div className='container text-center table-responsive'>
-			{ id === undefined ? <h1 className='mt-5 mb-4'>All 3 Cities Weather History</h1> : '' }
-			{ id === '1' ? <h1 className='mt-5 mb-4'>Miami Weather History</h1> : '' } 
-			{ id === '2' ? <h1 className='mt-5 mb-4'>New York Weather History</h1> : '' } 
-			{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando Weather History</h1> : '' }
-			<DataTable 
-				columns={ columns } 
-				data={ records } 
-				pagination 
-				fixedHeader 
-				fixedHeaderScrollHeight='600px'
-				striped 
-				highlightOnHover
-				dense
-			/> 		
-			<Link to="/" className="btn btn-primary">Back</Link> 
-		</div>
-	);
+	useEffect(() => {
+		//eslint-disable-next-line react-hooks/exhaustive-deps	
+	}, [records]);
+
+	if (records.length  === 0) {
+		return (
+			<div>
+				<Loading />	
+			</div>			
+		);
+	}
+	else {
+		return (
+			<div className='container text-center table-responsive'>
+				{ id === undefined ? <h1 className='mt-5 mb-4'>All 3 Cities Weather History</h1> : '' }
+				{ id === '1' ? <h1 className='mt-5 mb-4'>Miami Weather History</h1> : '' } 
+				{ id === '2' ? <h1 className='mt-5 mb-4'>New York Weather History</h1> : '' } 
+				{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando Weather History</h1> : '' }
+				<DataTable 
+					columns={ columns } 
+					data={ records } 
+					pagination 
+					fixedHeader 
+					fixedHeaderScrollHeight='600px'
+					striped 
+					highlightOnHover
+					dense
+				/> 		
+				<Link to="/" className="btn btn-primary">Back</Link> 
+			</div>
+		);
+	}
 };
 
 export default Record;

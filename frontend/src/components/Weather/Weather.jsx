@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MapView from '../Map/MapView';
 import { Link } from 'react-router-dom';
-import './weather.css';
+import { Loading } from '../Loading/Loading';
+import './css/weather.css';
 
 export const Weather = ({ cityName }) => {
 
@@ -14,6 +15,7 @@ export const Weather = ({ cityName }) => {
 	const [lat, setLat] = useState(0);
 	const [lon, setLon] = useState(0);
 	const [cityId, setCityId] = useState(0);
+	const [loading, setLoading] = useState(false);
 
 	const api = async (url) => {
   		let res = await fetch(url);
@@ -72,11 +74,12 @@ export const Weather = ({ cityName }) => {
 
   	useEffect(() => {
 		//eslint-disable-next-line react-hooks/exhaustive-deps
-  	}, [lat, lon]);
+  	}, [lat, lon, loading]);
 
 	return (
 		<div className='container font-size'>
-			{ cityName !== '' ? <MapView lat={ lat } lng={ lon } humidity={ humidity } /> : '' }		
+			{ loading ? <Loading /> : '' }
+			{ cityName !== '' ? <MapView lat={ lat } lng={ lon } humidity={ humidity } setLoading ={ setLoading } /> : '' }		
 			{ cityName === '' ? '' : <Link to={ '/record/city/' + cityId } className='btn btn-primary mt-4'>Record</Link> }
 		</div>		
 	);	

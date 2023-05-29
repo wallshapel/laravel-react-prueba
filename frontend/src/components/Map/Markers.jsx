@@ -12,10 +12,10 @@ const markerIcon = new L.Icon({
 const Markers = ({ lat, lng, humidity }) => {
 
 	return (
-		<Marker position={{lat, lng}} icon={markerIcon} >
+		<Marker position={ { lat, lng} } icon={ markerIcon } >
 			<Popup>
-		    	<div><b>Humidity: { humidity } %</b></div>
-		    </Popup>
+		  	<div><b>Humidity: { humidity }%</b></div>
+		  </Popup>
 		</Marker>
 
 	);

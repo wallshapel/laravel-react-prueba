@@ -14,7 +14,7 @@ export const Searcher = () => {
 				<option value='Miami'>Miami</option>				
 				<option value='New York'>New York</option>
 				<option value='Orlando'>Orlando</option>
-			</select>
+			</select>			
 			{ cityName === '' ? <Link to={ '/record' } className='btn btn-primary mt-1'>Record</Link> : '' }
 			<Weather cityName={ cityName } />
 		</div>
