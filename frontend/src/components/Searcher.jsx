@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Weather } from './Weather';
+import { Weather } from './Weather/Weather';
 import { Link } from 'react-router-dom';
 
 export const Searcher = () => {

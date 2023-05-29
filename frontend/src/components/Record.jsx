@@ -50,7 +50,7 @@ const Record = () => {
 			if (id === undefined) {
 				const res = await fetch(endpointRecord);
 				const data = await res.json();
-				console.log(data);
+				//console.log(data);
 				let reg = [];
 				data.forEach((obj) => {
 					reg.push({	

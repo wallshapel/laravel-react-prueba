@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import MapView from '../Map/MapView';
 import { Link } from 'react-router-dom';
-import miamiMap from './images/miami.png';
-import newYorkMap from './images/new-york.png';
-import orlandoMap from './images/orlando.png';
 import './weather.css';
 
 export const Weather = ({ cityName }) => {
@@ -13,6 +11,8 @@ export const Weather = ({ cityName }) => {
 	const endpointRecord = 'http://127.0.0.1:8000/api';
 
 	const [humidity, setHumidity] = useState(0);
+	const [lat, setLat] = useState(0);
+	const [lon, setLon] = useState(0);
 	const [cityId, setCityId] = useState(0);
 
 	const api = async (url) => {
@@ -23,6 +23,8 @@ export const Weather = ({ cityName }) => {
 		const weatherApi = await res.json();
 		//console.log(weatherApi);
 		setHumidity(weatherApi.main.humidity);
+		setLat(apiCity[0].lat);
+		setLon(apiCity[0].lon);
 		switch (cityName) {
 			case 'Miami':
 				setCityId(1);
@@ -55,19 +57,26 @@ export const Weather = ({ cityName }) => {
 	}
 
 	useEffect(() => {
+		setLat(0);
+		setLon(0);
+		setHumidity(0);
 		if (cityName !== '')
 			api(urlApiCityName + cityName);			
-		else
+		else {
+			setLat(0);
+			setLon(0);
 			setHumidity(0);
+		}
 		//eslint-disable-next-line react-hooks/exhaustive-deps
   	}, [cityName]);
 
+  	useEffect(() => {
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+  	}, [lat, lon]);
+
 	return (
-		<div className='container font-size'>			
-			{ cityName === 'Miami' ? <img src={ miamiMap } alt='Miami' /> : '' } 
-			{ cityName === 'New York' ? <img src={ newYorkMap } alt='New York' /> : '' } 			
-			{ cityName === 'Orlando' ? <img src={ orlandoMap } alt='Orlando' /> : '' }			
-			{ humidity === 0 ? '' : <h2 className='mt-2'>Humidity: { humidity }%</h2> } 
+		<div className='container font-size'>
+			{ cityName !== '' ? <MapView lat={ lat } lng={ lon } humidity={ humidity } /> : '' }		
 			{ cityName === '' ? '' : <Link to={ '/record/city/' + cityId } className='btn btn-primary mt-4'>Record</Link> }
 		</div>		
 	);	
