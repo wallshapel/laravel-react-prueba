@@ -107,7 +107,7 @@ const Record = () => {
 					highlightOnHover
 					dense
 				/> 		
-				<Link to="/" className="btn btn-primary">Back</Link> 
+				<Link to="/" className="btn btn-primary mt-5">Back</Link> 
 			</div>
 		);
 	}

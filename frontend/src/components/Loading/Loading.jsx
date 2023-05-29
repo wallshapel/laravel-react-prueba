@@ -4,7 +4,7 @@ export const Loading = () => {
 
 	return (
 		<div id='loading'>
-			<img src={ loading } alt='loading...' />
+			<div><img src={ loading } alt='loading...' /></div>
 		</div>
 	);
 
