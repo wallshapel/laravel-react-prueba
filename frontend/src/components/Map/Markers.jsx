@@ -12,7 +12,7 @@ const markerIcon = new L.Icon({
 const Markers = ({ lat, lng, humidity }) => {
 
 	return (
-		<Marker position={ { lat, lng} } icon={ markerIcon } mouseover={ (e) => e.target.openPopup() } >
+		<Marker position={ { lat, lng} } icon={ markerIcon } >
 			<Tooltip>
 		  	<div><b>Humidity: { humidity }%</b></div>
 		  </Tooltip>
