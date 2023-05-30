@@ -15,7 +15,7 @@ const MapView = ({ lat, lng, humidity, setLoading }) => {
 
 	if (lat !== 0 && lng !== 0) {
 
-		return <MapContainer center={ { lat, lng } } zoom= {13}>
+		return <MapContainer center={ { lat, lng } } zoom= { 5 }>
 			<TileLayer 
 				url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 				attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

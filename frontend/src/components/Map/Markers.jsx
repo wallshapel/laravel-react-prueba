@@ -1,5 +1,5 @@
 import React from 'react';
-import { Marker, Popup } from 'react-leaflet';
+import { Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 
 const markerIcon = new L.Icon({
@@ -12,10 +12,10 @@ const markerIcon = new L.Icon({
 const Markers = ({ lat, lng, humidity }) => {
 
 	return (
-		<Marker position={ { lat, lng} } icon={ markerIcon } >
-			<Popup>
+		<Marker position={ { lat, lng} } icon={ markerIcon } mouseover={ (e) => e.target.openPopup() } >
+			<Tooltip>
 		  	<div><b>Humidity: { humidity }%</b></div>
-		  </Popup>
+		  </Tooltip>
 		</Marker>
 
 	);
