@@ -46,35 +46,36 @@ const Record = () => {
 		];
 	}	
 
+	const getRecordsByCityId = async () => {
+		if (id === undefined) {
+			const res = await fetch(endpointRecord);
+			const data = await res.json();
+			//console.log(data);
+			let reg = [];
+			data.forEach((obj) => {
+				reg.push({	
+					city: obj.city.name,
+					created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
+					humidity: obj.humidity + '%'	
+				});	
+			});
+			setRecords(reg);		
+		} else {
+			const res = await fetch(endpointRecord + id);	
+			const data = await res.json();
+			//console.log(data);
+			let reg = [];
+			data.forEach((obj) => {
+				reg.push({					
+					created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
+					humidity: obj.humidity + '%'	
+				});	
+			});
+			setRecords(reg);		
+		}			
+	}
+
 	useEffect(() => {		
-		const getRecordsByCityId = async () => {
-			if (id === undefined) {
-				const res = await fetch(endpointRecord);
-				const data = await res.json();
-				//console.log(data);
-				let reg = [];
-				data.forEach((obj) => {
-					reg.push({	
-						city: obj.city.name,
-						created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
-						humidity: obj.humidity + '%'	
-					});	
-				});
-				setRecords(reg);		
-			} else {
-				const res = await fetch(endpointRecord + id);	
-				const data = await res.json();
-				//console.log(data);
-				let reg = [];
-				data.forEach((obj) => {
-					reg.push({					
-						created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
-						humidity: obj.humidity + '%'	
-					});	
-				});
-				setRecords(reg);		
-			}			
-		}
 		getRecordsByCityId();
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -82,6 +83,34 @@ const Record = () => {
 	useEffect(() => {
 		//eslint-disable-next-line react-hooks/exhaustive-deps	
 	}, [records]);
+
+	const filter = (match) => {
+		if (match === '') 
+			getRecordsByCityId();
+		else {
+			if (id === undefined) {
+				let newData = records.filter(reg => {
+					return reg.city.toLowerCase().includes(match.toLowerCase());
+				});	
+				if (newData.length !== 0) 
+					setRecords(newData);
+				else {
+					newData = records.filter(reg => {
+						return reg.humidity.toLowerCase().includes(match.toLowerCase());
+					});	
+					if (newData.length !== 0) 
+						setRecords(newData);					
+					else {
+						newData = records.filter(reg => {
+						return reg.humidity.toLowerCase().includes(match.toLowerCase());
+						});	
+						if (newData.length !== 0) 
+							setRecords(newData);		
+					}
+				}
+			}			
+		}
+	};
 
 	if (records.length  === 0) {
 		return (
@@ -97,6 +126,7 @@ const Record = () => {
 				{ id === '1' ? <h1 className='mt-5 mb-4'>Miami Weather History</h1> : '' } 
 				{ id === '2' ? <h1 className='mt-5 mb-4'>New York Weather History</h1> : '' } 
 				{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando Weather History</h1> : '' }
+				<label htmlFor='search'>Search: <input id='search' type='search' className='text-end' onChange={ (e) => filter(e.target.value) } autoFocus /></label>
 				<DataTable 
 					columns={ columns } 
 					data={ records } 

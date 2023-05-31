@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MapView from '../Map/MapView';
 import { Link } from 'react-router-dom';
 import { Loading } from '../Loading/Loading';
-import './css/weather.css';
+import './weather.css';
 
 export const Weather = ({ cityName }) => {
 
@@ -12,8 +12,10 @@ export const Weather = ({ cityName }) => {
 	const endpointRecord = 'http://127.0.0.1:8000/api';
 
 	const [humidity, setHumidity] = useState(0);
-	const [lat, setLat] = useState(0);
-	const [lon, setLon] = useState(0);
+	const [coord, setCoord] = useState({
+		lat: 0,
+		lon: 0}
+	);
 	const [cityId, setCityId] = useState(0);
 	const [loading, setLoading] = useState(false);
 
@@ -25,8 +27,10 @@ export const Weather = ({ cityName }) => {
 		const weatherApi = await res.json();
 		//console.log(weatherApi);
 		setHumidity(weatherApi.main.humidity);
-		setLat(apiCity[0].lat);
-		setLon(apiCity[0].lon);
+		setCoord({
+			lat: apiCity[0].lat,
+			lon: apiCity[0].lon
+		});
 		switch (cityName) {
 			case 'Miami':
 				setCityId(1);
@@ -59,14 +63,18 @@ export const Weather = ({ cityName }) => {
 	}
 
 	useEffect(() => {
-		setLat(0);
-		setLon(0);
+		setCoord({
+			lat: 0,
+			lon: 0
+		});
 		setHumidity(0);
 		if (cityName !== '')
 			api(urlApiCityName + cityName);			
 		else {
-			setLat(0);
-			setLon(0);
+			setCoord({
+				lat: 0,
+				lon: 0
+			});
 			setHumidity(0);
 		}
 		//eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,12 +82,12 @@ export const Weather = ({ cityName }) => {
 
   	useEffect(() => {
 		//eslint-disable-next-line react-hooks/exhaustive-deps
-  	}, [lat, lon, loading]);
+  	}, [coord, loading]);
 
 	return (
 		<div className='container font-size'>
 			{ loading ? <Loading /> : '' }
-			{ cityName !== '' ? <MapView lat={ lat } lng={ lon } humidity={ humidity } setLoading ={ setLoading } /> : '' }		
+			{ cityName !== '' ? <MapView coord={ coord } humidity={ humidity } setLoading ={ setLoading } /> : '' }		
 			{ cityName === '' ? '' : <Link to={ '/record/city/' + cityId } className='btn btn-primary mt-4'>Record</Link> }
 		</div>		
 	);	
