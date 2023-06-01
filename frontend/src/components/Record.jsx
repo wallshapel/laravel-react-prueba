@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';  // useParams servirá para obtener el id de la URL
 import moment from 'moment';  // Librería para formatear fechas
 import DataTable from 'react-data-table-component';
-import { Loading } from './Loading/Loading';
 
 const Record = () => {
 
-	let endpointRecord = 'http://127.0.0.1:8000/api/record/city/';
-	const { id } = useParams();  // Obtenemos el id de la ciudad desde la URL
-
-	// DataTables
+	const endPointRecord = 'http://127.0.0.1:8000/api/record';
 	const [records, setRecords] = useState([]);
-	let columns = [
+	// DataTables
+	const columns = [
+		{
+			name: 'City',
+			selector: (records, i) => records.city,
+			sortable: true
+		},
 		{
 			name: 'Datetime',
 			selector: (records, i) => records.created_at,
@@ -24,59 +26,24 @@ const Record = () => {
 		}
 	];
 	// Fin DataTables
-
-	if (id === undefined) { // Significa que se mostrará el historial de las 3 ciudades
-		endpointRecord = 'http://127.0.0.1:8000/api/record';
-		columns = [
-			{
-				name: 'City',
-				selector: (records, i) => records.city,
-				sortable: true
-			},
-			{
-				name: 'Datetime',
-				selector: (records, i) => records.created_at,
-				sortable: true
-			},
-			{
-				name: 'Humidity',
-				selector: (records, i) => records.humidity,
-				sortable: true
-			}
-		];
-	}	
-
-	const getRecordsByCityId = async () => {
-		if (id === undefined) {
-			const res = await fetch(endpointRecord);
-			const data = await res.json();
-			//console.log(data);
-			let reg = [];
-			data.forEach((obj) => {
-				reg.push({	
-					city: obj.city.name,
-					created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
-					humidity: obj.humidity + '%'	
-				});	
-			});
-			setRecords(reg);		
-		} else {
-			const res = await fetch(endpointRecord + id);	
-			const data = await res.json();
-			//console.log(data);
-			let reg = [];
-			data.forEach((obj) => {
-				reg.push({					
-					created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
-					humidity: obj.humidity + '%'	
-				});	
-			});
-			setRecords(reg);		
-		}			
+		
+	const getRecords = async () => {
+		const res = await fetch(endPointRecord);
+		const data = await res.json();
+		//console.log(data);
+		let reg = [];
+		data.forEach((obj) => {
+			reg.push({	
+				city: obj.city.name,
+				created_at: moment(obj.created_at).format("DD-MM-YYYY  hh:mm:ss"),
+				humidity: obj.humidity + '%'	
+			});	
+		});
+		setRecords(reg);		
 	}
 
 	useEffect(() => {		
-		getRecordsByCityId();
+		getRecords();
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -86,61 +53,47 @@ const Record = () => {
 
 	const filter = (match) => {
 		if (match === '') 
-			getRecordsByCityId();
+			getRecords();
 		else {
-			if (id === undefined) {
-				let newData = records.filter(reg => {
-					return reg.city.toLowerCase().includes(match.toLowerCase());
+			let newData = records.filter(reg => {
+				return reg.city.toLowerCase().includes(match.toLowerCase());
+			});	
+			if (newData.length !== 0) 
+				setRecords(newData);
+			else {
+				newData = records.filter(reg => {
+					return reg.humidity.toLowerCase().includes(match.toLowerCase());
 				});	
 				if (newData.length !== 0) 
-					setRecords(newData);
+					setRecords(newData);					
 				else {
 					newData = records.filter(reg => {
-						return reg.humidity.toLowerCase().includes(match.toLowerCase());
+					return reg.humidity.toLowerCase().includes(match.toLowerCase());
 					});	
 					if (newData.length !== 0) 
-						setRecords(newData);					
-					else {
-						newData = records.filter(reg => {
-						return reg.humidity.toLowerCase().includes(match.toLowerCase());
-						});	
-						if (newData.length !== 0) 
-							setRecords(newData);		
-					}
+						setRecords(newData);		
 				}
-			}			
+			}		
 		}
 	};
 
-	if (records.length  === 0) {
-		return (
-			<div>
-				<Loading />	
-			</div>			
-		);
-	}
-	else {
-		return (
-			<div className='container text-center table-responsive'>
-				{ id === undefined ? <h1 className='mt-5 mb-4'>All 3 Cities Weather History</h1> : '' }
-				{ id === '1' ? <h1 className='mt-5 mb-4'>Miami Weather History</h1> : '' } 
-				{ id === '2' ? <h1 className='mt-5 mb-4'>New York Weather History</h1> : '' } 
-				{ id === '3' ? <h1 className='mt-5 mb-4'>Orlando Weather History</h1> : '' }
-				<label htmlFor='search'>Search: <input id='search' type='search' className='text-end' onChange={ (e) => filter(e.target.value) } autoFocus /></label>
-				<DataTable 
-					columns={ columns } 
-					data={ records } 
-					pagination 
-					fixedHeader 
-					fixedHeaderScrollHeight='600px'
-					striped 
-					highlightOnHover
-					dense
-				/> 		
-				<Link to="/" className="btn btn-primary mt-5">Back</Link> 
-			</div>
-		);
-	}
+	return (
+		<div className='container text-center table-responsive'>
+			<h1 className='mt-5 mb-4'>Weather History</h1>
+			<label htmlFor='search'>Search: <input id='search' type='search' className='text-end' onChange={ (e) => filter(e.target.value) } autoFocus /></label>
+			<DataTable 
+				columns={ columns } 
+				data={ records } 
+				pagination 
+				fixedHeader 
+				fixedHeaderScrollHeight='600px'
+				striped 
+				highlightOnHover
+				dense
+			/> 		
+			<Link to="/" className="btn btn-primary mt-5">Back</Link> 
+		</div>
+	);
 };
 
 export default Record;

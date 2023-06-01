@@ -1,94 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import MapView from '../Map/MapView';
 import { Link } from 'react-router-dom';
-import { Loading } from '../Loading/Loading';
 import './weather.css';
 
-export const Weather = ({ cityName }) => {
+export const Weather = () => {	
+	
+	const [citiesNames, setCitiesNames] = useState([]);
+	const [coord, setCoord] = useState([]);
+	const [humidities, setHumidities] = useState([]);
+	const [consult, setConsult] = useState(false);
 
-	const key = 'acc2a06f0795ca9520a47369b0dae32a';	
-	let urlApiCityName = 'http://api.openweathermap.org/geo/1.0/direct?appid=' + key + '&q=';
-	let urlWeather = 'https://api.openweathermap.org/data/2.5/weather?appid=' + key;
-	const endpointRecord = 'http://127.0.0.1:8000/api';
+	useEffect(() => {
+		citiesDB();
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-	const [humidity, setHumidity] = useState(0);
-	const [coord, setCoord] = useState({
-		lat: 0,
-		lon: 0}
-	);
-	const [cityId, setCityId] = useState(0);
-	const [loading, setLoading] = useState(false);
-
-	const api = async (url) => {
-  		let res = await fetch(url);
-		const apiCity = await res.json();
-		//console.log(apiCity);
-		res = await fetch(urlWeather + '&lat=' + apiCity[0].lat + '&lon=' + apiCity[0].lon);
-		const weatherApi = await res.json();
-		//console.log(weatherApi);
-		setHumidity(weatherApi.main.humidity);
-		setCoord({
-			lat: apiCity[0].lat,
-			lon: apiCity[0].lon
-		});
-		switch (cityName) {
-			case 'Miami':
-				setCityId(1);
-				store(1, weatherApi.main.humidity);
-			break;
-			case 'New York':
-				setCityId(2);
-				store(2, weatherApi.main.humidity);
-			break;
-			case 'Orlando':
-				setCityId(3);
-				store(3, weatherApi.main.humidity);
-			break;
-			default:
-				setCityId(0);
-			break;
-		}
+	const citiesDB = async () => {  
+	    const res = await fetch('http://127.0.0.1:8000/api'); // Endpoint de laravel para obtener los nombres de la tabla cities
+	    const data = await res.json();
+	    setCitiesNames(data);
 	};
 
-	const store = async (city_id, hum) => {
+	useEffect(() => {	
+		citiesNames.map(city => {
+			getCoord(city.name);
+		});
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [citiesNames]);
+
+	const key = 'acc2a06f0795ca9520a47369b0dae32a';
+	const endPointCitiesNames = 'http://api.openweathermap.org/geo/1.0/direct?appid=' + key + '&q=';  // Endpoint para obetener coordenadas por el nombre de la ciudad
+
+	const getCoord = async (cityName) => {
+		const res = await fetch(endPointCitiesNames + cityName);
+	    const data = await res.json();
+	    setCoord(coord => [...coord, { lat: data[0].lat, lon: data[0].lon }]); // Actualizamos el array de objetos 'coord' hasta llenarlo de las coordenadas de las ciudades
+	};
+
+	const endPointWeather = 'https://api.openweathermap.org/data/2.5/weather?appid=' + key;
+
+	const showWeather = async () => {
+		if (consult) 
+			setHumidities([]);
+		setConsult(true);
+		coord.map(key => {
+			getHumidities(key.lat, key.lon);
+		});			
+	};
+
+	const getHumidities = async (lat, lon) => {
+		const res = await fetch(endPointWeather + '&lat=' + lat + '&lon=' + lon);
+		const data = await res.json();
+		setHumidities(humidities => [...humidities, { humidity: data.main.humidity }]); // Actualizamos el array de objetos 'coord' hasta llenarlo de las coordenadas de las ciudades
+	};
+
+	const store = async (city_id, humidity) => {
 		const params = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json;charset=utf-8'	},
 			body: JSON.stringify({
 				city_id,
-				humidity: hum
+				humidity
 			})
 		};		
-		await fetch(endpointRecord + '/record', params);
-	}
+		await fetch('http://127.0.0.1:8000/api/record', params);
+	} 
 
 	useEffect(() => {
-		setCoord({
-			lat: 0,
-			lon: 0
-		});
-		setHumidity(0);
-		if (cityName !== '')
-			api(urlApiCityName + cityName);			
-		else {
-			setCoord({
-				lat: 0,
-				lon: 0
-			});
-			setHumidity(0);
-		}
+		if (humidities.length === coord.length) {
+			citiesNames.map((key, i) => {
+				store(key.id, humidities[i].humidity);
+			});	
+		}		
 		//eslint-disable-next-line react-hooks/exhaustive-deps
-  	}, [cityName]);
-
-  	useEffect(() => {
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-  	}, [coord, loading]);
+	}, [humidities]);
 
 	return (
-		<div className='container font-size'>
-			{ loading ? <Loading /> : '' }
-			{ cityName !== '' ? <MapView coord={ coord } humidity={ humidity } setLoading ={ setLoading } /> : '' }		
-			{ cityName === '' ? '' : <Link to={ '/record/city/' + cityId } className='btn btn-primary mt-4'>Record</Link> }
+		<div className='container text-center mt-4'>
+			{ consult === true ? <h1>Weather</h1> : '' }
+			{ consult === true ? <MapView coord={ coord } humidities={ humidities } /> : '' }		
+			<button className='btn btn-success mt-4' onClick={ showWeather }>Weather</button>
+			<Link to={ '/record' } className='btn btn-primary mt-4'>Record</Link>
 		</div>		
 	);	
 

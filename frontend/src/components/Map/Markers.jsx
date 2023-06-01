@@ -4,21 +4,23 @@ import L from 'leaflet';
 
 const markerIcon = new L.Icon({
   iconUrl: require('./marker.png'),
-  iconSize: [40, 40],
+  iconSize: [20, 20],
   iconAnchor: [17, 46], //[left/right, top/bottom]
   popupAnchor: [0, -46], //[left/right, top/bottom]
 });
 
-const Markers = ({ coord, humidity }) => {
+const Markers = ({ coord, humidities }) => {
 
-	return (
-		<Marker position={ { lat: coord.lat, lng: coord.lon } } icon={ markerIcon } >
-			<Tooltip>
-		  	<div><b>Humidity: { humidity }%</b></div>
-		  </Tooltip>
-		</Marker>
-
-	);
+	if (humidities.length === coord.length) {
+		const markers = coord.map((value, i) => (
+			<Marker key={ i } position={ { lat: value.lat, lng: value.lon } } icon={ markerIcon } >
+				<Tooltip>
+			  	<span>Humidity: { humidities[i].humidity }%</span>
+			  </Tooltip>	
+			</Marker>	
+		));	
+		return <>{ markers }</>
+	}
 
 };
 
