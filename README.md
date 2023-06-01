@@ -26,9 +26,3 @@ No obstante este proyecto debe ejecutarse corriendo el comando php artisan serve
 ### `7)` Una vez el proyecto frontend tenga instaladas todas sus dependencias, para ejecutarlo, correr el comando npm start. El proyecto api debe estar en ejecución.
 
 ### `NOTA:` importante tener los puertos 8000 y 3000 libres para correr ambos proyectos, o en su lugar, asignar otros puertos por medio de los archivos de configuración respectivos.
-
-### `8)` Modo de uso:
-	a) Seleccionar una ciudad. le aparecerá un mapa con un marcador, al hacer click en el marcador aparecerá la humedad de la ciudad en tiempo real
-	b) Si no se selecciona una ciudad, puede hacer click en el botón Record, el cual listará un historial de la humedad de las 3 ciudades, siempre y cuando haya registros
-	c) Los registros del historial se crean a partir de cada consulta
-	d) Al seleccionar una ciudad también se puede ver el historial de modo individual presionando el botón Record
