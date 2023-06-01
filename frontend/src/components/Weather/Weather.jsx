@@ -9,6 +9,7 @@ export const Weather = () => {
 	const [coord, setCoord] = useState([]);
 	const [humidities, setHumidities] = useState([]);
 	const [consult, setConsult] = useState(false);
+	const [weather, setWeather] = useState([]);
 
 	useEffect(() => {
 		citiesDB();
@@ -51,7 +52,7 @@ export const Weather = () => {
 	const getHumidities = async (lat, lon) => {
 		const res = await fetch(endPointWeather + '&lat=' + lat + '&lon=' + lon);
 		const data = await res.json();
-		setHumidities(humidities => [...humidities, { humidity: data.main.humidity }]); // Actualizamos el array de objetos 'coord' hasta llenarlo de las coordenadas de las ciudades
+		setHumidities(humidities => [...humidities, { humidity: data.main.humidity }]); // Llenamos el array 'coord' con las coordenadas de las ciudades.
 	};
 
 	const store = async (city_id, humidity) => {
@@ -67,10 +68,14 @@ export const Weather = () => {
 	} 
 
 	useEffect(() => {
-		if (humidities.length === coord.length) {
+		if (humidities.length === coord.length) { // Esta comparación espera a que se hayan cargado por completo las humedades de todas las ciudades
 			citiesNames.map((key, i) => (
 				store(key.id, humidities[i].humidity)
 			));	
+			coord.forEach((key, i) => {
+				key.humidity = humidities[i].humidity;
+			});
+			setWeather(coord);
 		}		
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [humidities]);
@@ -78,7 +83,7 @@ export const Weather = () => {
 	return (
 		<div className='container text-center mt-4'>
 			{ consult === true ? <h1>Weather</h1> : '' }
-			{ consult === true ? <MapView coord={ coord } humidities={ humidities } /> : '' }		
+			{ consult === true ? <MapView weather={ weather } /> : '' }		
 			<button className='btn btn-success mt-4' onClick={ showWeather }>Weather</button>
 			<Link to={ '/record' } className='btn btn-primary mt-4'>Record</Link>
 		</div>		
