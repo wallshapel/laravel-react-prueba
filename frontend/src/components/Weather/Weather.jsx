@@ -22,9 +22,9 @@ export const Weather = () => {
 	};
 
 	useEffect(() => {	
-		citiesNames.map(city => {
-			getCoord(city.name);
-		});
+		citiesNames.map(city => (
+			getCoord(city.name)
+		));
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [citiesNames]);
 
@@ -43,9 +43,9 @@ export const Weather = () => {
 		if (consult) 
 			setHumidities([]);
 		setConsult(true);
-		coord.map(key => {
-			getHumidities(key.lat, key.lon);
-		});			
+		coord.map(key => (
+			getHumidities(key.lat, key.lon)
+		));			
 	};
 
 	const getHumidities = async (lat, lon) => {
@@ -68,9 +68,9 @@ export const Weather = () => {
 
 	useEffect(() => {
 		if (humidities.length === coord.length) {
-			citiesNames.map((key, i) => {
-				store(key.id, humidities[i].humidity);
-			});	
+			citiesNames.map((key, i) => (
+				store(key.id, humidities[i].humidity)
+			));	
 		}		
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [humidities]);
