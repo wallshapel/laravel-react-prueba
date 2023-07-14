@@ -26,3 +26,6 @@ No obstante este proyecto debe ejecutarse corriendo el comando php artisan serve
 ### `7)` Una vez el proyecto frontend tenga instaladas todas sus dependencias, para ejecutarlo, correr el comando npm start. El proyecto api debe estar en ejecución.
 
 ### `NOTA:` importante tener los puertos 8000 y 3000 libres para correr ambos proyectos, o en su lugar, asignar otros puertos por medio de los archivos de configuración respectivos.
+
+### DOCKER:
+Ejecutar docker compose up ubicando en ./weather
