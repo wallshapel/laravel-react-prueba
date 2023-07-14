@@ -1,0 +1,10 @@
+api/.env
+api/README.md
+api/.editorconfig
+api/Dockerfile
+
+frontend/node_modules
+frontend/public
+frontend/src
+frontend/package.json
+frontend/README.md
